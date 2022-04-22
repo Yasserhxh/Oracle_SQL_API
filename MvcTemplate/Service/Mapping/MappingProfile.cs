@@ -15,6 +15,7 @@ namespace Service.Mapping
             // Entities to Models mapping
             CreateMap<ApplicationUser, UserModel>();
             CreateMap<COMPTEUR_HModel, COMPTEUR_H>();
+            CreateMap<RELEVE_EAUModel, RELEVE_EAU>();
 
         }
     }

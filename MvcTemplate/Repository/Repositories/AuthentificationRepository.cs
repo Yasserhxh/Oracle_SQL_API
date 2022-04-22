@@ -35,7 +35,35 @@ namespace Repository.Repositories
             var res = _db.compteurs_h.Take(20).AsEnumerable();
             return res;
         }
-
+        public IEnumerable<RELEVE_EAU> getReleves()
+        {
+            var res = _db.releves_eau.Take(20).AsEnumerable();
+            return res;
+        }
+        public IEnumerable<RELEVE_EAU> showHist(string etat, string search)
+        {
+            var query = _db.releves_eau.AsEnumerable();
+            /*if (!string.IsNullOrEmpty(search))
+                query = query.Where(p => p.LIB_CPT == search);
+            if (!string.IsNullOrEmpty(etat))
+                query = query.Where(p => p.STATUT_REL == etat);*/
+            return query.AsEnumerable().Take(50);
+        }
+        public decimal findLastIndex(string compteurID)
+        {
+            var res = _db.releves_eau.Where(p=>p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p=>p.DATE_REL).FirstOrDefault().IDX;
+            return res;
+        }
+        public IEnumerable<int> findLastYearIndex(string compteurID)
+        {
+            var res = _db.releves_eau.Where(p=>p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p=>p.DATE_REL).Take(12).Select(p=>p.IDX);
+            return res;
+        }
+        public RELEVE_EAU findFormulaireIndex(string date, string compteurID, string codeCentre)
+        {
+            var res = _db.releves_eau.Where(p => p.DATE_REL == Convert.ToDateTime(date) && p.NUM_CTR == compteurID && p.CODCT == codeCentre).FirstOrDefault();
+            return res;
+        }
         public async Task<ApplicationUser> Login(LoginModel loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.UserName);
@@ -59,6 +87,38 @@ namespace Repository.Repositories
                 return true;
             else
                 return false;
+        }
+        public async Task<bool> CreateReleve(RELEVE_EAU releve)
+        {
+            await _db.releves_eau.AddAsync(releve);
+            var confirm = await unitOfWork.Complete();
+            if (confirm > 0)
+                return true;
+            else
+                return false;
+            
+        }
+        public CompteurViewModel checkCompteur(string compteurID)
+        {
+            var compteur = _db.compteurs_h.Where(p=>p.NUM_CTR == compteurID).FirstOrDefault();
+            if(compteur != null)
+            {
+                var res = _db.releves_eau.Where(p => p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p => p.DATE_REL).FirstOrDefault().IDX;
+
+                var compteurView = new CompteurViewModel()
+                {
+                    Code_Centre = compteur.CODCT,
+                    Installation = compteur.NUM_INST,
+                    Libelle = compteur.LIB_CTR,
+                    Code_Compteur = compteurID,
+                    Index = res
+                };
+                return compteurView;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

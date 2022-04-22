@@ -11,6 +11,12 @@ namespace Service.IServices
         Task<bool> Register(RegisterModel userModel);
         Task<bool> Login(LoginModel loginModel);
         IEnumerable<COMPTEUR_HModel> getCompteurs();
-
+        IEnumerable<RELEVE_EAUModel> getReleves();
+        decimal findLastIndex(string compteurID);
+        Task<bool> CreateReleve(RELEVE_EAUModel releveModel);
+        CompteurViewModel checkCompteur(string compteurID);
+        IEnumerable<RELEVE_EAUModel> showHist(string etat, string search);
+        IEnumerable<int> findLastYearIndex(string compteurID);
+        RELEVE_EAUModel findFormulaireIndex(string date, string compteurID, string codeCentre);
     }
 }

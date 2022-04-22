@@ -20,12 +20,14 @@ namespace Service.Services
     {
         private readonly IAuthentificationRepository authentificationRepository;
         private readonly IMapper mapper;
+        private readonly IUnitOfWork unitOfWork;
 
 
-        public AuthentificationService(IAuthentificationRepository authentificationRepository, IMapper mapper)
+        public AuthentificationService(IAuthentificationRepository authentificationRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             this.authentificationRepository = authentificationRepository;
             this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
         }
 
         public async Task<bool> Register(RegisterModel registerModel)
@@ -48,6 +50,60 @@ namespace Service.Services
         {
             return mapper.Map<IEnumerable<COMPTEUR_H>, IEnumerable<COMPTEUR_HModel>>(authentificationRepository.getCompteurs());
 
+        }
+        public IEnumerable<RELEVE_EAUModel> getReleves()
+        {
+            return mapper.Map<IEnumerable<RELEVE_EAU>, IEnumerable<RELEVE_EAUModel>>(authentificationRepository.getReleves());
+
+        }
+
+        public decimal findLastIndex(string compteurID)
+        {
+            return this.findLastIndex(compteurID);
+        }
+
+        public async Task<bool> CreateReleve(RELEVE_EAUModel releveModel)
+        {
+            using (IDbContextTransaction transaction = this.unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    RELEVE_EAU releve = mapper.Map<RELEVE_EAUModel, RELEVE_EAU>(releveModel);
+                    var idReleve = await authentificationRepository.CreateReleve(releve);
+                    if (idReleve == false)
+                    {
+                        return false;
+                    }
+                    transaction.Commit();
+                    return true;
+
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+        }
+
+        public CompteurViewModel checkCompteur(string compteurID)
+        {
+            return authentificationRepository.checkCompteur(compteurID);
+        }
+
+        public IEnumerable<RELEVE_EAUModel> showHist(string etat, string search)
+        {
+            return mapper.Map<IEnumerable<RELEVE_EAU>, IEnumerable<RELEVE_EAUModel>>(authentificationRepository.showHist(etat, search));
+        }
+
+        public IEnumerable<int> findLastYearIndex(string compteurID)
+        {
+            return authentificationRepository.findLastYearIndex(compteurID);
+        }
+
+        public RELEVE_EAUModel findFormulaireIndex(string date, string compteurID, string codeCentre)
+        {
+            return mapper.Map<RELEVE_EAU, RELEVE_EAUModel>(authentificationRepository.findFormulaireIndex(date, compteurID, codeCentre));
         }
     }
 }

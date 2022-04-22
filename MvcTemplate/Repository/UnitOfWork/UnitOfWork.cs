@@ -1,4 +1,5 @@
-﻿using Repository.Data;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Repository.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,9 +16,13 @@ namespace Repository.UnitOfWork
             this.context = context;
         }
 
-        public async Task Complete()
+        public async Task<int> Complete()
         {
-            await context.SaveChangesAsync();
+            return await context.SaveChangesAsync();
+        }
+        public IDbContextTransaction BeginTransaction()
+        {
+            return context.Database.BeginTransaction();
         }
     }
 }

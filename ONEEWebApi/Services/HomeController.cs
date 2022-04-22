@@ -53,11 +53,69 @@ namespace WebApiONEE.Services
             return Ok(await this.authentificationService.Register(registerModel));
         }
         [HttpGet]
-        [Route("testConnection")]
-        public JsonResult TestConnection()
+        [Route("getCompteurs")]
+        public JsonResult getCompteurs()
         {
-            var res = this.authentificationRepository.getCompteurs();
+            var res = authentificationRepository.getCompteurs();
             return new JsonResult(res);
         }
-    }
+        [HttpGet]
+        [Route("getReleves")]
+        public JsonResult getReleves()
+        {
+            var res = authentificationRepository.getReleves();
+            return new JsonResult(res);
+        }
+        [HttpGet]
+        [HttpGet("getCptData/{compteurID}", Name = "getCptData")]
+        public JsonResult getCptData(string compteurID)
+        {             
+            var res = authentificationRepository.checkCompteur(compteurID);
+            return new JsonResult(res);
+        } 
+        [HttpPost]
+        [Route("insertReleve")]
+        public JsonResult insertReleve([FromBody] ReleveViewModel releveView)
+        {
+            var releve = new RELEVE_EAUModel()
+            {
+                CODCT = releveView.centre,
+                INST_CPT = releveView.installation,
+                LIB_CPT = releveView.libelle,
+                NUM_CTR = releveView.numCompteur,
+                IDX = releveView.index,
+                ESTIM = releveView.estimation,
+                VOLUME = releveView.volume,
+                IMG_REL = releveView.imageJson,
+                STATUT_REL = "En attente",
+                DATE_REL = DateTime.Now,
+                DATECREA = DateTime.Now,
+                
+            };
+            releve.TOTAL = releve.VOLUME + releve.ESTIM;
+            var res = authentificationService.CreateReleve(releve);
+            return new JsonResult(res);
+        }
+        [HttpGet]
+        [Route("showHist")]
+        public JsonResult showHist([FromBody] SearchModel model)
+        {
+            var res = authentificationRepository.showHist(model.etat, model.search);
+            return new JsonResult(res);
+        }
+        [HttpGet]
+        [HttpGet("findLastYearIndex/{compteurID}", Name = "findLastYearIndex")]
+        public JsonResult findLastYearIndex(string compteurID)
+        {
+            var res = authentificationRepository.findLastYearIndex(compteurID);
+            return new JsonResult(res);
+        }
+        /*[HttpGet]
+        [Route("showHist")]
+        public JsonResult findFormulaireIndex(string compteurID)
+        {
+            var res = authentificationRepository.findLastYearIndex(compteurID);
+            return new JsonResult(res);
+        }*/
+    }   
 }
