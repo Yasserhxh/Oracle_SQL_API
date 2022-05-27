@@ -23,6 +23,7 @@ namespace Repository.Data
         }
         public DbSet<COMPTEUR_H> compteurs_h { get; set; }
         public DbSet<RELEVE_EAU> releves_eau { get; set; }
+       // public DbSet<RELEVE_EAU> releves_eau { get; set; }
 
     }
 }

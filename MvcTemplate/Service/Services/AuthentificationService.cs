@@ -91,9 +91,9 @@ namespace Service.Services
             return authentificationRepository.checkCompteur(compteurID);
         }
 
-        public IEnumerable<RELEVE_EAUModel> showHist(string etat, string search)
+        public IEnumerable<ReleveViewModel> showHist()
         {
-            return mapper.Map<IEnumerable<RELEVE_EAU>, IEnumerable<RELEVE_EAUModel>>(authentificationRepository.showHist(etat, search));
+            return (authentificationRepository.showHist());
         }
 
         public IEnumerable<int> findLastYearIndex(string compteurID)
@@ -104,6 +104,29 @@ namespace Service.Services
         public RELEVE_EAUModel findFormulaireIndex(string date, string compteurID, string codeCentre)
         {
             return mapper.Map<RELEVE_EAU, RELEVE_EAUModel>(authentificationRepository.findFormulaireIndex(date, compteurID, codeCentre));
+        }
+
+        public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
+        {
+            using (IDbContextTransaction transaction = unitOfWork.BeginTransaction())
+            {
+                try
+                {
+                    var idReleve = await authentificationRepository.ValidateRel(releveViewModel);
+                    if (idReleve == false)
+                    {
+                        return false;
+                    }
+                    transaction.Commit();
+                    return true;
+
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
         }
     }
 }

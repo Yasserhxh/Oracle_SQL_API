@@ -75,7 +75,7 @@ namespace WebApiONEE.Services
         } 
         [HttpPost]
         [Route("insertReleve")]
-        public JsonResult insertReleve([FromBody] ReleveViewModel releveView)
+        public async Task<JsonResult> insertReleveAsync([FromBody] ReleveViewModel releveView)
         {
             var releve = new RELEVE_EAUModel()
             {
@@ -83,24 +83,26 @@ namespace WebApiONEE.Services
                 INST_CPT = releveView.installation,
                 LIB_CPT = releveView.libelle,
                 NUM_CTR = releveView.numCompteur,
-                IDX = releveView.index,
+                IDX = Convert.ToInt32(releveView.index),
                 ESTIM = releveView.estimation,
                 VOLUME = releveView.volume,
-                IMG_REL = releveView.imageJson,
                 STATUT_REL = "En attente",
                 DATE_REL = DateTime.Now,
                 DATECREA = DateTime.Now,
-                
+                //PICTURE = releveView.imageJson,
             };
+            //byte[] bytes = Encoding.UTF8.GetBytes(releveView.imageJson);
+            //releve.IMG = bytes;
+            //releve.IMG = releveView.imageJson;
             releve.TOTAL = releve.VOLUME + releve.ESTIM;
-            var res = authentificationService.CreateReleve(releve);
+            var res = await authentificationService.CreateReleve(releve);
             return new JsonResult(res);
         }
         [HttpGet]
         [Route("showHist")]
-        public JsonResult showHist([FromBody] SearchModel model)
+        public JsonResult showHist()
         {
-            var res = authentificationRepository.showHist(model.etat, model.search);
+            var res = authentificationRepository.showHist();
             return new JsonResult(res);
         }
         [HttpGet]
@@ -117,5 +119,17 @@ namespace WebApiONEE.Services
             var res = authentificationRepository.findLastYearIndex(compteurID);
             return new JsonResult(res);
         }*/
+        [HttpPost]
+        [Route("ValidateRel")]
+        public async Task<JsonResult> ValidateRel([FromBody] ReleveViewModel releveView)
+        {
+            if (releveView.etat_rel == "Validé")
+                releveView.coherence = "1";
+            else
+                releveView.coherence = "0";
+
+            var res = await authentificationService.ValidateRel(releveView);
+            return new JsonResult(res);
+        }
     }   
 }

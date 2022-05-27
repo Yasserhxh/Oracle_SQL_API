@@ -14,8 +14,9 @@ namespace Service.IServices
         IEnumerable<RELEVE_EAUModel> getReleves();
         decimal findLastIndex(string compteurID);
         Task<bool> CreateReleve(RELEVE_EAUModel releveModel);
+        Task<bool> ValidateRel(ReleveViewModel releveViewModel);
         CompteurViewModel checkCompteur(string compteurID);
-        IEnumerable<RELEVE_EAUModel> showHist(string etat, string search);
+        IEnumerable<ReleveViewModel> showHist();
         IEnumerable<int> findLastYearIndex(string compteurID);
         RELEVE_EAUModel findFormulaireIndex(string date, string compteurID, string codeCentre);
     }
