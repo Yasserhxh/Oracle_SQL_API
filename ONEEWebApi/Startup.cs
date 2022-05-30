@@ -40,12 +40,22 @@ namespace ONEEWebApi
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            // ORACLE DATABASE
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseOracle(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            //SQL DATABASE
+            services.AddDbContext<SqlDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("SqlConnection")));
+
+            //ADD IDENTITY
             services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<SqlDbContext>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
