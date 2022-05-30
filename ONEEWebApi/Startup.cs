@@ -45,16 +45,16 @@ namespace ONEEWebApi
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseOracle(
                     Configuration.GetConnectionString("DefaultConnection")));
-
+            //ADD IDENTITY
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<SqlDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
             //SQL DATABASE
             services.AddDbContext<SqlDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("SqlConnection")));
 
-            //ADD IDENTITY
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<SqlDbContext>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             // configure strongly typed settings objects
@@ -96,6 +96,7 @@ namespace ONEEWebApi
             services.AddScoped<IAuthentificationService, AuthentificationService>();
             services.AddScoped<IAuthentificationRepository, AuthentificationRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ISqlUnitOfWork, SqlUnitOfWork>();
             services.AddAutoMapper();
 
         }

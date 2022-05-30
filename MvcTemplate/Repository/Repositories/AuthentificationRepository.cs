@@ -22,10 +22,10 @@ namespace Repository.Repositories
         private readonly ApplicationDbContext _dbOracle;
         private readonly SqlDbContext _dbSQL;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IUnitOfWork SqlunitOfWork;
+        private readonly ISqlUnitOfWork SqlunitOfWork;
 
         public AuthentificationRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, 
-            RoleManager<IdentityRole> roleManager, ApplicationDbContext dbOracle, IUnitOfWork unitOfWork, SqlDbContext dbSQL, IUnitOfWork SqlunitOfWork)
+            RoleManager<IdentityRole> roleManager, ApplicationDbContext dbOracle, IUnitOfWork unitOfWork, SqlDbContext dbSQL, ISqlUnitOfWork SqlunitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -48,7 +48,7 @@ namespace Repository.Repositories
         }
         public IEnumerable<ReleveViewModel> showHist()
         {
-            var query = _dbOracle.releves_eau.OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(50);
+            var query = _dbSQL.releves_eau.OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(50);
             var rels = new List<ReleveViewModel>();
             foreach(var item in query)
             {
@@ -68,12 +68,12 @@ namespace Repository.Repositories
         }
         public decimal findLastIndex(string compteurID)
         {
-            var res = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p=>p.DATE_REL).FirstOrDefault().IDX;
+            var res = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p=>p.DATE_REL).FirstOrDefault().IDX;
             return res;
         }
         public IEnumerable<int> findLastYearIndex(string compteurID)
         {
-            var resQ = _dbOracle.releves_eau.Where(p => p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p => p.DATE_REL);//.Take(12);
+            var resQ = _dbSQL.releves_eau.Where(p => p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p => p.DATE_REL);//.Take(12);
             var res = resQ.ToList();
         /*    var bt = Enumerable.Range(0, res.FirstOrDefault().IMG.Length)
                       .Where(x => x % 2 == 0)
@@ -85,7 +85,7 @@ namespace Repository.Repositories
         }
         public RELEVE_EAU findFormulaireIndex(string date, string compteurID, string codeCentre)
         {
-            var res = _dbOracle.releves_eau.Where(p => p.DATE_REL == Convert.ToDateTime(date) && p.NUM_CTR == compteurID && p.CODCT == codeCentre).FirstOrDefault();
+            var res = _dbSQL.releves_eau.Where(p => p.DATE_REL == Convert.ToDateTime(date) && p.NUM_CTR == compteurID && p.CODCT == codeCentre).FirstOrDefault();
             return res;
         }
         public async Task<ApplicationUser> Login(LoginModel loginModel)
@@ -114,8 +114,8 @@ namespace Repository.Repositories
         }
         public async Task<bool> CreateReleve(RELEVE_EAU releve)
         {
-            await _dbOracle.releves_eau.AddAsync(releve);
-            var confirm = await unitOfWork.Complete();
+            await _dbSQL.releves_eau.AddAsync(releve);
+            var confirm = await SqlunitOfWork.Complete();
             if (confirm > 0)
                 return true;
             else
@@ -147,7 +147,7 @@ namespace Repository.Repositories
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
             DateTime newDate = Convert.ToDateTime(releveViewModel.date_Rel);
-            var compteur1 = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre && p.STATUT_REL == "En attente"  ).AsEnumerable();
+            var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre && p.STATUT_REL == "En attente"  ).AsEnumerable();
             var compteur = compteur1.Where(p => p.DATE_REL.Date == newDate.Date).FirstOrDefault();
             if(compteur != null)
             {
@@ -156,7 +156,7 @@ namespace Repository.Repositories
                 compteur.STATUT_REL = releveViewModel.etat_rel ;
                 compteur.COHERENCE = releveViewModel.coherence;
                 compteur.MOTIF = releveViewModel.motif;
-                _dbOracle.Entry(compteur).State = EntityState.Modified;
+                _dbSQL.Entry(compteur).State = EntityState.Modified;
                  var confirm = await unitOfWork.Complete();
                 if (confirm > 0)
                     return true;

@@ -21,13 +21,15 @@ namespace Service.Services
         private readonly IAuthentificationRepository authentificationRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
+        private readonly ISqlUnitOfWork sqlunitOfWork;
 
 
-        public AuthentificationService(IAuthentificationRepository authentificationRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public AuthentificationService(IAuthentificationRepository authentificationRepository, IMapper mapper, IUnitOfWork unitOfWork, ISqlUnitOfWork sqlunitOfWork)
         {
             this.authentificationRepository = authentificationRepository;
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.sqlunitOfWork = sqlunitOfWork;
         }
 
         public async Task<bool> Register(RegisterModel registerModel)
@@ -64,7 +66,7 @@ namespace Service.Services
 
         public async Task<bool> CreateReleve(RELEVE_EAUModel releveModel)
         {
-            using (IDbContextTransaction transaction = this.unitOfWork.BeginTransaction())
+            using (IDbContextTransaction transaction = this.sqlunitOfWork.BeginTransaction())
             {
                 try
                 {
@@ -108,7 +110,7 @@ namespace Service.Services
 
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
-            using (IDbContextTransaction transaction = unitOfWork.BeginTransaction())
+            using (IDbContextTransaction transaction = sqlunitOfWork.BeginTransaction())
             {
                 try
                 {

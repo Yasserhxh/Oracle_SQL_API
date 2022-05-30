@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace Repository.UnitOfWork
 {
-    public class SqlUnitOfWork : IUnitOfWork
+    public class SqlUnitOfWork : ISqlUnitOfWork
     {
-        private readonly SqlDbContext context;
+        private readonly SqlDbContext Sqlcontext;
 
         public SqlUnitOfWork(SqlDbContext context)
         {
-            this.context = context;
+            this.Sqlcontext = context;
         }
 
         public async Task<int> Complete()
         {
-            return await context.SaveChangesAsync();
+            return await Sqlcontext.SaveChangesAsync();
         }
         public IDbContextTransaction BeginTransaction()
         {
-            return context.Database.BeginTransaction();
+            return Sqlcontext.Database.BeginTransaction();
         }
     }
 }

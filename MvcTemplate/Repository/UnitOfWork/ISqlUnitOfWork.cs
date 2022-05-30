@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Repository.UnitOfWork
 {
-    public interface IUnitOfWork
+    public interface ISqlUnitOfWork
     {
         Task<int> Complete();
         IDbContextTransaction BeginTransaction();
