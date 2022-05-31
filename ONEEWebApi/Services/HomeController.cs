@@ -89,6 +89,8 @@ namespace WebApiONEE.Services
                 STATUT_REL = "En attente",
                 DATE_REL = DateTime.Now,
                 DATECREA = DateTime.Now,
+                CREE_PAR = releveView.utilisateur,
+                TYPE_SAISIE = releveView.type_saisie,
                 //PICTURE = releveView.imageJson,
             };
             //byte[] bytes = Encoding.UTF8.GetBytes(releveView.imageJson);

@@ -27,6 +27,8 @@ namespace Domain.Models
         public string STATUT_REL { get; set; }
         public string MOTIF { get; set; }
         public string COHERENCE { get; set; }
+        public string TYPE_SAISIE { get; set; }
+
         //public string PICTURE { get; set; }
         //public byte[] IMG { get; set; }
         //public string IMG { get; set; }

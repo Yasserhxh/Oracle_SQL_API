@@ -18,5 +18,7 @@ namespace Domain.Models
         public string etat_rel { get; set; }
         public string coherence { get; set; }
         public string motif { get; set; }
+        public string utilisateur { get; set; }
+        public string type_saisie { get; set; }
     }
 }
