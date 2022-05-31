@@ -48,10 +48,23 @@ namespace Service.Services
             return true;
         }
 
-        public IEnumerable<COMPTEUR_HModel> getCompteurs(string CodeCentre, string NumInstallation)
+        public List<CompteurViewModel> getCompteurs(string CodeCentre, string NumInstallation)
         {
-            return mapper.Map<IEnumerable<COMPTEUR_H>, IEnumerable<COMPTEUR_HModel>>(authentificationRepository.getCompteurs(CodeCentre, NumInstallation));
+            var res = authentificationRepository.getCompteurs(CodeCentre, NumInstallation);
+            var listRes = new List<CompteurViewModel>();
+            foreach(var item in res)
+            {
+                var compteurViewModel = new CompteurViewModel()
+                {
+                    Code_Centre = item.CODCT,
+                    Installation = item.NUM_INST,
+                    Code_Compteur = item.NUM_CTR,
+                    Libelle = item.LIB_CTR
+                };
+                listRes.Add(compteurViewModel);
+            }
 
+            return listRes;
         }
         public IEnumerable<RELEVE_EAUModel> getReleves()
         {
