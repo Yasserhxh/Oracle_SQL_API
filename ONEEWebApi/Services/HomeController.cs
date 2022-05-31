@@ -52,11 +52,11 @@ namespace WebApiONEE.Services
 
             return Ok(await this.authentificationService.Register(registerModel));
         }
-        [HttpGet]
+        [HttpPost]
         [Route("getCompteurs")]
-        public JsonResult getCompteurs(CompteurViewModel model)
+        public JsonResult getCompteurs([FromBody] CompteurViewModel model)
         {
-            var res = authentificationRepository.getCompteurs(model.Code_Centre, model.Installation);
+            var res = authentificationService.getCompteurs(model.Code_Centre, model.Installation);
             return new JsonResult(res);
         }
         [HttpGet]

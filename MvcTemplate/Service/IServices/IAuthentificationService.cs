@@ -10,7 +10,7 @@ namespace Service.IServices
     {
         Task<bool> Register(RegisterModel userModel);
         Task<bool> Login(LoginModel loginModel);
-        IEnumerable<COMPTEUR_HModel> getCompteurs(string CodeCentre, string NumInstallation);
+        List<CompteurViewModel> getCompteurs(string CodeCentre, string NumInstallation);
         IEnumerable<RELEVE_EAUModel> getReleves();
         decimal findLastIndex(string compteurID);
         Task<bool> CreateReleve(RELEVE_EAUModel releveModel);
