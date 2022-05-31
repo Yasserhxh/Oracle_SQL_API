@@ -10,7 +10,7 @@ namespace Service.IServices
     {
         Task<bool> Register(RegisterModel userModel);
         Task<bool> Login(LoginModel loginModel);
-        IEnumerable<COMPTEUR_HModel> getCompteurs();
+        IEnumerable<COMPTEUR_HModel> getCompteurs(string CodeCentre, string NumInstallation);
         IEnumerable<RELEVE_EAUModel> getReleves();
         decimal findLastIndex(string compteurID);
         Task<bool> CreateReleve(RELEVE_EAUModel releveModel);
@@ -19,5 +19,7 @@ namespace Service.IServices
         IEnumerable<ReleveViewModel> showHist();
         IEnumerable<int> findLastYearIndex(string compteurID);
         RELEVE_EAUModel findFormulaireIndex(string date, string compteurID, string codeCentre);
+        CentreViewModel getCentre(string userEmail);
+        IEnumerable<KeyValuePair<string, string>> getInstallation(string CodeCentre);
     }
 }

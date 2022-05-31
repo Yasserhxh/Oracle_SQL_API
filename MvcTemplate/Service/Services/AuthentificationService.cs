@@ -48,9 +48,9 @@ namespace Service.Services
             return true;
         }
 
-        public IEnumerable<COMPTEUR_HModel> getCompteurs()
+        public IEnumerable<COMPTEUR_HModel> getCompteurs(string CodeCentre, string NumInstallation)
         {
-            return mapper.Map<IEnumerable<COMPTEUR_H>, IEnumerable<COMPTEUR_HModel>>(authentificationRepository.getCompteurs());
+            return mapper.Map<IEnumerable<COMPTEUR_H>, IEnumerable<COMPTEUR_HModel>>(authentificationRepository.getCompteurs(CodeCentre, NumInstallation));
 
         }
         public IEnumerable<RELEVE_EAUModel> getReleves()
@@ -129,6 +129,17 @@ namespace Service.Services
                     return false;
                 }
             }
+        }
+
+        public CentreViewModel getCentre(string userEmail)
+        {
+            return this.authentificationRepository.getCentre(userEmail);
+           
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> getInstallation(string CodeCentre)
+        {
+            return authentificationRepository.getInstallation(CodeCentre);
         }
     }
 }

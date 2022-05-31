@@ -54,9 +54,9 @@ namespace WebApiONEE.Services
         }
         [HttpGet]
         [Route("getCompteurs")]
-        public JsonResult getCompteurs()
+        public JsonResult getCompteurs(CompteurViewModel model)
         {
-            var res = authentificationRepository.getCompteurs();
+            var res = authentificationRepository.getCompteurs(model.Code_Centre, model.Installation);
             return new JsonResult(res);
         }
         [HttpGet]
@@ -129,6 +129,20 @@ namespace WebApiONEE.Services
                 releveView.coherence = "0";
 
             var res = await authentificationService.ValidateRel(releveView);
+            return new JsonResult(res);
+        }
+        [HttpGet]
+        [HttpGet("getCentre/{userEmail}", Name = "getCentre")]
+        public JsonResult getCentre(string userEmail)
+        {
+            var res = authentificationRepository.getCentre(userEmail);
+            return new JsonResult(res);
+        }
+        [HttpGet]
+        [HttpGet("getInstallation/{codecentre}", Name = "codecentre")]
+        public JsonResult getInstallation(string codecentre)
+        {
+            var res = authentificationRepository.getInstallation(codecentre);
             return new JsonResult(res);
         }
     }   

@@ -13,7 +13,7 @@ namespace Repository.IRepositories
     {
         Task<bool> Register(RegisterModel userModel);
         Task<ApplicationUser> Login(LoginModel loginModel);
-        IEnumerable<COMPTEUR_H> getCompteurs();
+        IEnumerable<COMPTEUR_H> getCompteurs(string CodeCentre, string NumInstallation);
         CompteurViewModel checkCompteur(string compteurID);
         IEnumerable<RELEVE_EAU> getReleves();
         decimal findLastIndex(string compteurID);
@@ -22,5 +22,7 @@ namespace Repository.IRepositories
         IEnumerable<int> findLastYearIndex(string compteurID);
         RELEVE_EAU findFormulaireIndex(string date, string compteurID, string codeCentre);
         Task<bool> ValidateRel(ReleveViewModel releveViewModel);
+        CentreViewModel getCentre(string userEmail);
+        IEnumerable<KeyValuePair<string, string>> getInstallation(string CodeCentre);
     }
 }

@@ -36,9 +36,9 @@ namespace Repository.Repositories
 
         }
 
-        public IEnumerable<COMPTEUR_H> getCompteurs()
+        public IEnumerable<COMPTEUR_H> getCompteurs(string CodeCentre, string NumInstallation)
         {
-            var res = _dbOracle.compteurs_h.Take(20).AsEnumerable();
+            var res = _dbOracle.compteurs_h.Where(p=>p.NUM_INST == NumInstallation && p.CODCT == CodeCentre).AsEnumerable();
             return res;
         }
         public IEnumerable<RELEVE_EAU> getReleves()
@@ -167,6 +167,23 @@ namespace Repository.Repositories
             {
                 return false;
             }
+        }
+        public CentreViewModel getCentre(string userEmail)
+        {
+            var centreID = _dbOracle.utilisateurs.Where(p => p.MAILOFFICE == userEmail).FirstOrDefault().CODECENTRE;
+            var centre = _dbOracle.centres.Where(p => p.CODCT == centreID).FirstOrDefault();//.Take(12);
+            var centreView = new CentreViewModel()
+            {
+                CentreId = centre.CODCT,
+                CentreName = centre.LIBCT
+            } ;
+            return centreView;
+        }
+        public IEnumerable<KeyValuePair<string,string>> getInstallation(string CodeCentre)
+        {
+            var res = _dbOracle.installations.Where(p => p.CODCT == CodeCentre).Select(p => new KeyValuePair<string, string> ( p.NUM_INST, p.LIB_INST ))
+                .AsEnumerable();
+            return res;
         }
     }
 }

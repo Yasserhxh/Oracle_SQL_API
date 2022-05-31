@@ -16,6 +16,7 @@ namespace Service.Mapping
             CreateMap<ApplicationUser, UserModel>();
             CreateMap<COMPTEUR_HModel, COMPTEUR_H>();
             CreateMap<RELEVE_EAUModel, RELEVE_EAU>();
+            CreateMap<INSTALLATIONModel, INSTALLATION>();
 
         }
     }
