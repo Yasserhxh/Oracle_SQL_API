@@ -64,13 +64,13 @@ namespace Repository.Repositories
                     etat_rel = item.STATUT_REL,
                     estimation = (item.ESTIM == null ? 0 : item.ESTIM),
                     date_Rel = item.DATE_REL.ToString(),
-                    type_saisie = "",
+                    type_saisie = item.TYPE_SAISIE,
                     coherence = (string.IsNullOrEmpty(item.COHERENCE) ? "" : item.COHERENCE),
                     statut_rel = item.STATUT_REL,
                     utilisateur = item.CREE_PAR,
                     volume = (int)item.VOLUME,
                     motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
-                    imageJson = "",
+                    imageJson = item.IMG_REL,
                     date_crea = item.DATECREA.ToString(),   
 
                 };
@@ -96,13 +96,13 @@ namespace Repository.Repositories
                     etat_rel = item.STATUT_REL,
                     estimation = (item.ESTIM == null ? 0 : item.ESTIM),
                     date_Rel = item.DATE_REL.ToString(),
-                    type_saisie = "",
+                    type_saisie = item.TYPE_SAISIE,
                     coherence = (string.IsNullOrEmpty(item.COHERENCE) ? "" : item.COHERENCE),
                     statut_rel = item.STATUT_REL,
                     utilisateur = item.CREE_PAR,
                     volume = (int)item.VOLUME,
                     motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
-                    imageJson = "",
+                    imageJson = item.IMG_REL,
                     date_crea = item.DATECREA.ToString(),
 
                 };
@@ -128,7 +128,7 @@ namespace Repository.Repositories
                     etat_rel = item.STATUT_REL,
                     estimation = (item.ESTIM == null ? 0 : item.ESTIM),
                     date_Rel = item.DATE_REL.ToString(),
-                    type_saisie = "",
+                    type_saisie = item.TYPE_SAISIE,
                     coherence = (string.IsNullOrEmpty(item.COHERENCE) ? "" : item.COHERENCE),
                     statut_rel = item.STATUT_REL,
                     utilisateur = item.CREE_PAR,
@@ -223,7 +223,7 @@ namespace Repository.Repositories
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
             DateTime newDate = Convert.ToDateTime(releveViewModel.date_Rel);
-            var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre && p.STATUT_REL == "En attente"  ).AsEnumerable();
+            var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre/* && p.STATUT_REL == "En attente" */ ).AsEnumerable();
             var compteur = compteur1.Where(p => p.DATE_REL.Date == newDate.Date).FirstOrDefault();
             if(compteur != null)
             {
@@ -231,11 +231,17 @@ namespace Repository.Repositories
                 //var res = _db.releves_eau.Where(p => p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p => p.DATE_REL).FirstOrDefault().IDX;
                 compteur.STATUT_REL = releveViewModel.etat_rel ;
                 compteur.COHERENCE = releveViewModel.coherence;
+                compteur.ESTIM = releveViewModel.estimation;
+                compteur.VOLUME = releveViewModel.volume;
+                compteur.TOTAL = releveViewModel.estimation + releveViewModel.volume;
                 compteur.MOTIF = releveViewModel.motif;
                 _dbSQL.Entry(compteur).State = EntityState.Modified;
-                 var confirm = await unitOfWork.Complete();
+                 var confirm = await SqlunitOfWork.Complete();
                 if (confirm > 0)
-                    return await insertOracleRelve(compteur);
+                    if (compteur.STATUT_REL != "Validé")
+                        return await insertOracleRelve(compteur);
+                    else
+                        return true;
                 else
                     return false;
             }

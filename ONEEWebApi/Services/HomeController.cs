@@ -105,7 +105,7 @@ namespace WebApiONEE.Services
                 DATECREA = DateTime.Now,
                 CREE_PAR = releveView.utilisateur,
                 TYPE_SAISIE = releveView.type_saisie,
-                //PICTURE = releveView.imageJson,
+                IMG_REL = releveView.imageJson,
             };
             //byte[] bytes = Encoding.UTF8.GetBytes(releveView.imageJson);
             //releve.IMG = bytes;
