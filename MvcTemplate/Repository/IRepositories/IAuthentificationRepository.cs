@@ -18,11 +18,12 @@ namespace Repository.IRepositories
         IEnumerable<RELEVE_EAU> getReleves();
         decimal findLastIndex(string compteurID);
         Task<bool> CreateReleve(RELEVE_EAU releve);
-        IEnumerable<ReleveViewModel> showHist();
+        IEnumerable<RELEVE_EAU> showHist(string numCtr);
         IEnumerable<int> findLastYearIndex(string compteurID);
         RELEVE_EAU findFormulaireIndex(string date, string compteurID, string codeCentre);
         Task<bool> ValidateRel(ReleveViewModel releveViewModel);
         CentreViewModel getCentre(string userEmail);
         IEnumerable<KeyValuePair<string, string>> getInstallation(string CodeCentre);
+        IEnumerable<RELEVE_EAU> getRelevesSQL(string AgentName);
     }
 }

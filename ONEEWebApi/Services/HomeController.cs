@@ -65,6 +65,13 @@ namespace WebApiONEE.Services
         {
             var res = authentificationRepository.getReleves();
             return new JsonResult(res);
+        } 
+        [HttpGet]
+        [Route("getRelevesAgent/{agent}")]
+        public JsonResult getRelevesAgent(string agent)
+        {
+            var res = authentificationRepository.getRelevesSQL(agent);
+            return new JsonResult(res);
         }
         [HttpGet]
         [HttpGet("getCptData/{compteurID}", Name = "getCptData")]
@@ -101,10 +108,10 @@ namespace WebApiONEE.Services
             return new JsonResult(res);
         }
         [HttpGet]
-        [Route("showHist")]
-        public JsonResult showHist()
+        [Route("showHist/{numCtr}")]
+        public JsonResult showHist(string numCtr)
         {
-            var res = authentificationRepository.showHist();
+            var res = authentificationRepository.showHist(numCtr);
             return new JsonResult(res);
         }
         [HttpGet]

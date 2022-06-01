@@ -45,11 +45,16 @@ namespace Repository.Repositories
         {
             var res = _dbOracle.releves_eau.Take(20).AsEnumerable();
             return res;
-        }
-        public IEnumerable<ReleveViewModel> showHist()
+        } 
+        public IEnumerable<RELEVE_EAU> getRelevesSQL(string AgentName)
         {
-            var query = _dbSQL.releves_eau.OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(50);
-            var rels = new List<ReleveViewModel>();
+            var res = _dbSQL.releves_eau.Where(p=>p.CREE_PAR == AgentName && p.DATE_REL.Month == DateTime.Now.Month).AsEnumerable();
+            return res;
+        }
+        public IEnumerable<RELEVE_EAU> showHist(string numCtr)
+        {
+            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr && p.DATE_REL.Year == DateTime.Now.Year).OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(12);
+          /*  var rels = new List<ReleveViewModel>();
             foreach(var item in query)
             {
                 var rel = new ReleveViewModel()
@@ -63,8 +68,8 @@ namespace Repository.Repositories
                     estimation = item.ESTIM,
                 };
                 rels.Add(rel);
-            }
-            return rels;
+            }*/
+            return query;
         }
         public decimal findLastIndex(string compteurID)
         {
@@ -159,14 +164,22 @@ namespace Repository.Repositories
                 _dbSQL.Entry(compteur).State = EntityState.Modified;
                  var confirm = await unitOfWork.Complete();
                 if (confirm > 0)
-                    return true;
+                    return await insertOracleRelve(compteur);
                 else
                     return false;
             }
             else
-            {
                 return false;
-            }
+        }
+        public async Task<bool> insertOracleRelve(RELEVE_EAU compteur)
+        {
+            await _dbOracle.releves_eau.AddAsync(compteur);
+            var confirm = await unitOfWork.Complete();
+            if(confirm>0)
+                return true;
+            else
+                return false;
+            
         }
         public CentreViewModel getCentre(string userEmail)
         {
