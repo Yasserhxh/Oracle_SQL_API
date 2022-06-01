@@ -48,7 +48,7 @@ namespace Repository.Repositories
         } 
         public IEnumerable<ReleveViewModel> getRelevesSQL(string AgentName)
         {
-            var res = _dbSQL.releves_eau.Where(p=>p.CREE_PAR == AgentName/* && p.DATE_REL.Month == DateTime.Now.Month*/).AsEnumerable();
+            var res = _dbSQL.releves_eau.Where(p=>p.CREE_PAR == AgentName && p.DATE_REL.Month == DateTime.Now.Month).AsEnumerable();
             var rels = new List<ReleveViewModel>();
             foreach (var item in res)
             {
@@ -57,10 +57,10 @@ namespace Repository.Repositories
                     libelle = item.LIB_CPT,
                     index = item.IDX.ToString(),
                     installation = item.INST_CPT,
-                    Nominstallation = "",//_dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
+                    Nominstallation = _dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
                     numCompteur = item.NUM_CTR,
                     centre = item.CODCT,
-                    Nomcentre = "",//_dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
+                    Nomcentre = _dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
                     etat_rel = item.STATUT_REL,
                     estimation = (item.ESTIM == null ? 0 : item.ESTIM),
                     date_Rel = item.DATE_REL.ToString(),
@@ -70,7 +70,8 @@ namespace Repository.Repositories
                     utilisateur = item.CREE_PAR,
                     volume = (int)item.VOLUME,
                     motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
-                    imageJson = ""
+                    imageJson = "",
+                    date_crea = item.DATECREA.ToString(),   
 
                 };
                 rels.Add(rel);
@@ -79,7 +80,7 @@ namespace Repository.Repositories
         }
         public IEnumerable<ReleveViewModel> getRelevesChefCentreSQL(string CodeCentre)
         {
-            var res = _dbSQL.releves_eau.Where(p=>p.CODCT == CodeCentre/* && p.DATE_REL.Month == DateTime.Now.Month*/).AsEnumerable();
+            var res = _dbSQL.releves_eau.Where(p=>p.CODCT == CodeCentre && p.DATE_REL.Month == DateTime.Now.Month).AsEnumerable();
             var rels = new List<ReleveViewModel>();
             foreach (var item in res)
             {
@@ -88,10 +89,10 @@ namespace Repository.Repositories
                     libelle = item.LIB_CPT,
                     index = item.IDX.ToString(),
                     installation = item.INST_CPT,
-                    Nominstallation = "",//_dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
+                    Nominstallation = _dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
                     numCompteur = item.NUM_CTR,
                     centre = item.CODCT,
-                    Nomcentre = "",//_dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
+                    Nomcentre = _dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
                     etat_rel = item.STATUT_REL,
                     estimation = (item.ESTIM == null ? 0 : item.ESTIM),
                     date_Rel = item.DATE_REL.ToString(),
@@ -101,7 +102,8 @@ namespace Repository.Repositories
                     utilisateur = item.CREE_PAR,
                     volume = (int)item.VOLUME,
                     motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
-                    imageJson = ""
+                    imageJson = "",
+                    date_crea = item.DATECREA.ToString(),
 
                 };
                 rels.Add(rel);
@@ -110,7 +112,7 @@ namespace Repository.Repositories
         }
         public IEnumerable<ReleveViewModel> showHist(string numCtr)
         {
-            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr /*&& p.DATE_REL.Year == DateTime.Now.Year*/).OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(12);
+            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr && p.DATE_REL.Year == DateTime.Now.Year).OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(12);
             var rels = new List<ReleveViewModel>();
             foreach(var item in query)
             {
@@ -119,10 +121,10 @@ namespace Repository.Repositories
                     libelle = item.LIB_CPT,
                     index = item.IDX.ToString(),
                     installation = item.INST_CPT,
-                    Nominstallation = "",//_dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
+                    Nominstallation = _dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
                     numCompteur = item.NUM_CTR,
                     centre = item.CODCT,
-                    Nomcentre = "",//_dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
+                    Nomcentre = _dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
                     etat_rel = item.STATUT_REL,
                     estimation = (item.ESTIM == null ? 0 : item.ESTIM),
                     date_Rel = item.DATE_REL.ToString(),
@@ -132,7 +134,8 @@ namespace Repository.Repositories
                     utilisateur = item.CREE_PAR,
                     volume = (int)item.VOLUME,
                     motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
-                    imageJson = ""
+                    imageJson = "",
+                    date_crea = item.DATECREA.ToString(),
 
                 };
                 rels.Add(rel);

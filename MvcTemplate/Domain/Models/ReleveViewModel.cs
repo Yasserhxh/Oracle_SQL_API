@@ -14,6 +14,7 @@ namespace Domain.Models
         public string centre { get; set; }
         public string Nomcentre { get; set; }
         public string date_Rel { get; set; }
+        public string date_crea { get; set; }
         public string imageJson { get; set; }
         public int? estimation { get; set; }
         public int volume { get; set; }
