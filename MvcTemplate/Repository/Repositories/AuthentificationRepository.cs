@@ -46,15 +46,72 @@ namespace Repository.Repositories
             var res = _dbOracle.releves_eau.Take(20).AsEnumerable();
             return res;
         } 
-        public IEnumerable<RELEVE_EAU> getRelevesSQL(string AgentName)
+        public IEnumerable<ReleveViewModel> getRelevesSQL(string AgentName)
         {
-            var res = _dbSQL.releves_eau.Where(p=>p.CREE_PAR == AgentName && p.DATE_REL.Month == DateTime.Now.Month).AsEnumerable();
-            return res;
+            var res = _dbSQL.releves_eau.Where(p=>p.CREE_PAR == AgentName/* && p.DATE_REL.Month == DateTime.Now.Month*/).AsEnumerable();
+            var rels = new List<ReleveViewModel>();
+            foreach (var item in res)
+            {
+                var rel = new ReleveViewModel()
+                {
+                    libelle = item.LIB_CPT,
+                    index = item.IDX.ToString(),
+                    installation = item.INST_CPT,
+                    Nominstallation = "",//_dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
+                    numCompteur = item.NUM_CTR,
+                    centre = item.CODCT,
+                    Nomcentre = "",//_dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
+                    etat_rel = item.STATUT_REL,
+                    estimation = (item.ESTIM == null ? 0 : item.ESTIM),
+                    date_Rel = item.DATE_REL.ToString(),
+                    type_saisie = "",
+                    coherence = (string.IsNullOrEmpty(item.COHERENCE) ? "" : item.COHERENCE),
+                    statut_rel = item.STATUT_REL,
+                    utilisateur = item.CREE_PAR,
+                    volume = (int)item.VOLUME,
+                    motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
+                    imageJson = ""
+
+                };
+                rels.Add(rel);
+            }
+            return rels;
         }
-        public IEnumerable<RELEVE_EAU> showHist(string numCtr)
+        public IEnumerable<ReleveViewModel> getRelevesChefCentreSQL(string CodeCentre)
         {
-            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr && p.DATE_REL.Year == DateTime.Now.Year).OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(12);
-          /*  var rels = new List<ReleveViewModel>();
+            var res = _dbSQL.releves_eau.Where(p=>p.CODCT == CodeCentre/* && p.DATE_REL.Month == DateTime.Now.Month*/).AsEnumerable();
+            var rels = new List<ReleveViewModel>();
+            foreach (var item in res)
+            {
+                var rel = new ReleveViewModel()
+                {
+                    libelle = item.LIB_CPT,
+                    index = item.IDX.ToString(),
+                    installation = item.INST_CPT,
+                    Nominstallation = "",//_dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
+                    numCompteur = item.NUM_CTR,
+                    centre = item.CODCT,
+                    Nomcentre = "",//_dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
+                    etat_rel = item.STATUT_REL,
+                    estimation = (item.ESTIM == null ? 0 : item.ESTIM),
+                    date_Rel = item.DATE_REL.ToString(),
+                    type_saisie = "",
+                    coherence = (string.IsNullOrEmpty(item.COHERENCE) ? "" : item.COHERENCE),
+                    statut_rel = item.STATUT_REL,
+                    utilisateur = item.CREE_PAR,
+                    volume = (int)item.VOLUME,
+                    motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
+                    imageJson = ""
+
+                };
+                rels.Add(rel);
+            }
+            return rels;
+        }
+        public IEnumerable<ReleveViewModel> showHist(string numCtr)
+        {
+            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr /*&& p.DATE_REL.Year == DateTime.Now.Year*/).OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(12);
+            var rels = new List<ReleveViewModel>();
             foreach(var item in query)
             {
                 var rel = new ReleveViewModel()
@@ -62,14 +119,25 @@ namespace Repository.Repositories
                     libelle = item.LIB_CPT,
                     index = item.IDX.ToString(),
                     installation = item.INST_CPT,
+                    Nominstallation = "",//_dbOracle.installations.Where(p => p.NUM_INST == item.INST_CPT).FirstOrDefault().LIB_INST,
                     numCompteur = item.NUM_CTR,
                     centre = item.CODCT,
+                    Nomcentre = "",//_dbOracle.centres.Where(p => p.CODCT == item.CODCT).FirstOrDefault().LIBCT,
                     etat_rel = item.STATUT_REL,
-                    estimation = item.ESTIM,
+                    estimation = (item.ESTIM == null ? 0 : item.ESTIM),
+                    date_Rel = item.DATE_REL.ToString(),
+                    type_saisie = "",
+                    coherence = (string.IsNullOrEmpty(item.COHERENCE) ? "" : item.COHERENCE),
+                    statut_rel = item.STATUT_REL,
+                    utilisateur = item.CREE_PAR,
+                    volume = (int)item.VOLUME,
+                    motif = (string.IsNullOrEmpty(item.MOTIF) ? "" : item.MOTIF),
+                    imageJson = ""
+
                 };
                 rels.Add(rel);
-            }*/
-            return query;
+            }
+            return rels;
         }
         public decimal findLastIndex(string compteurID)
         {

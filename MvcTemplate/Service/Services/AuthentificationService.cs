@@ -106,9 +106,10 @@ namespace Service.Services
             return authentificationRepository.checkCompteur(compteurID);
         }
 
-        public IEnumerable<RELEVE_EAUModel> showHist(string numCtr)
+        public IEnumerable<ReleveViewModel> showHist(string numCtr)
         {
-            return mapper.Map<IEnumerable<RELEVE_EAU>, IEnumerable<RELEVE_EAUModel>>(authentificationRepository.showHist(numCtr));
+            var res = authentificationRepository.showHist(numCtr);
+            return res;
         }
 
         public IEnumerable<int> findLastYearIndex(string compteurID)
@@ -155,9 +156,14 @@ namespace Service.Services
             return authentificationRepository.getInstallation(CodeCentre);
         }
 
-        public IEnumerable<RELEVE_EAUModel> getRelevesSQL(string AgentName)
+        public IEnumerable<ReleveViewModel> getRelevesSQL(string AgentName)
         {
-            return mapper.Map<IEnumerable<RELEVE_EAU>, IEnumerable<RELEVE_EAUModel>>(authentificationRepository.getRelevesSQL(AgentName));
+            return authentificationRepository.getRelevesSQL(AgentName);
+        }
+
+        public IEnumerable<ReleveViewModel> getRelevesChefCentreSQL(string CodeCentre)
+        {
+            return authentificationRepository.getRelevesChefCentreSQL(CodeCentre);
         }
     }
 }

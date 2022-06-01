@@ -8,9 +8,11 @@ namespace Domain.Models
     {
         public string index { get; set; }
         public string installation { get; set; }
+        public string Nominstallation { get; set; }
         public string libelle { get; set; }
         public string numCompteur { get; set; }
         public string centre { get; set; }
+        public string Nomcentre { get; set; }
         public string date_Rel { get; set; }
         public string imageJson { get; set; }
         public int? estimation { get; set; }
@@ -20,5 +22,6 @@ namespace Domain.Models
         public string motif { get; set; }
         public string utilisateur { get; set; }
         public string type_saisie { get; set; }
+        public string statut_rel { get; set; }
     }
 }

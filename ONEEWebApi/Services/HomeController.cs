@@ -74,6 +74,13 @@ namespace WebApiONEE.Services
             return new JsonResult(res);
         }
         [HttpGet]
+        [Route("getRelevesChefCentre/{CodeCentre}")]
+        public JsonResult getRelevesChefCentre(string CodeCentre)
+        {
+            var res = authentificationRepository.getRelevesChefCentreSQL(CodeCentre);
+            return new JsonResult(res);
+        }
+        [HttpGet]
         [HttpGet("getCptData/{compteurID}", Name = "getCptData")]
         public JsonResult getCptData(string compteurID)
         {             
