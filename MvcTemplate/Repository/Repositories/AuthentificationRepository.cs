@@ -112,7 +112,7 @@ namespace Repository.Repositories
         }
         public IEnumerable<ReleveViewModel> showHist(string numCtr)
         {
-            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr && p.DATE_REL.Year == DateTime.Now.Year).OrderByDescending(p => p.DATE_REL).AsEnumerable().Take(12);
+            var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr && p.DATE_REL.Year == DateTime.Now.Year).Take(12).OrderByDescending(p => p.DATE_REL).AsEnumerable();
             var rels = new List<ReleveViewModel>();
             foreach(var item in query)
             {
