@@ -11,5 +11,7 @@ namespace Domain.Models
         public string Libelle { get; set; }
         public string Code_Compteur { get; set; }
         public int Index { get; set; }    
+        public bool Taken { get; set; }
+        public string Statut_Rel { get; set; }
     }
 }

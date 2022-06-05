@@ -23,5 +23,6 @@ namespace Service.IServices
         IEnumerable<KeyValuePair<string, string>> getInstallation(string CodeCentre);
         IEnumerable<ReleveViewModel> getRelevesSQL(string AgentName);
         IEnumerable<ReleveViewModel> getRelevesChefCentreSQL(string CodeCentre);
+        ReleveViewModel getReleveByCompteur(string CodeCompteur, string installation, string CodeCentre);
     }
 }

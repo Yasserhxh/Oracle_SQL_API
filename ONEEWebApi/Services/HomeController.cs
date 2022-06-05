@@ -59,6 +59,13 @@ namespace WebApiONEE.Services
             var res = authentificationService.getCompteurs(model.Code_Centre, model.Installation);
             return new JsonResult(res);
         }
+        [HttpPost]
+        [Route("getReleveByCompteur")]
+        public JsonResult getReleveByCompteur([FromBody] CompteurViewModel model)
+        {
+            var res = authentificationService.getReleveByCompteur(model.Code_Compteur, model.Installation, model.Code_Centre);
+            return new JsonResult(res);
+        }
         [HttpGet]
         [Route("getReleves")]
         public JsonResult getReleves()

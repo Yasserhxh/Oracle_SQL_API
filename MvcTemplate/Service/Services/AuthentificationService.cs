@@ -54,14 +54,34 @@ namespace Service.Services
             var listRes = new List<CompteurViewModel>();
             foreach(var item in res)
             {
-                var compteurViewModel = new CompteurViewModel()
+                var rel = authentificationRepository.getReleveByCompteur(item.NUM_CTR,item.NUM_INST,item.CODCT);
+                if (rel != null)
                 {
-                    Code_Centre = item.CODCT,
-                    Installation = item.NUM_INST,
-                    Code_Compteur = item.NUM_CTR,
-                    Libelle = item.LIB_CTR
-                };
-                listRes.Add(compteurViewModel);
+                    var compteurViewModel = new CompteurViewModel()
+                    {
+                        Code_Centre = item.CODCT,
+                        Installation = item.NUM_INST,
+                        Code_Compteur = item.NUM_CTR,
+                        Libelle = item.LIB_CTR,
+                        Taken = true,
+                        Statut_Rel = rel.statut_rel
+                    };
+                    listRes.Add(compteurViewModel);
+                }
+                else
+                {
+                    var compteurViewModel = new CompteurViewModel()
+                    {
+                        Code_Centre = item.CODCT,
+                        Installation = item.NUM_INST,
+                        Code_Compteur = item.NUM_CTR,
+                        Libelle = item.LIB_CTR,
+                        Taken = false,
+                        Statut_Rel = "Non Prise"
+                    };
+                    listRes.Add(compteurViewModel);
+                }
+             
             }
 
             return listRes;
@@ -164,6 +184,11 @@ namespace Service.Services
         public IEnumerable<ReleveViewModel> getRelevesChefCentreSQL(string CodeCentre)
         {
             return authentificationRepository.getRelevesChefCentreSQL(CodeCentre);
+        }
+
+        public ReleveViewModel getReleveByCompteur(string CodeCompteur, string installation, string CodeCentre)
+        {
+            return authentificationRepository.getReleveByCompteur(CodeCompteur, installation, CodeCentre);
         }
     }
 }

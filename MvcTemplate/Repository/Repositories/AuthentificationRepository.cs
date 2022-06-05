@@ -110,6 +110,38 @@ namespace Repository.Repositories
             }
             return rels;
         }
+        public ReleveViewModel getReleveByCompteur(string CodeCompteur, string installation, string CodeCentre)
+        {
+            var res = _dbSQL.releves_eau.Where(p => p.CODCT == CodeCentre && p.DATE_REL.Month == DateTime.Now.Month && p.INST_CPT == installation && p.NUM_CTR == CodeCompteur).FirstOrDefault();
+            if (res == null)
+            {
+                return null;
+            }
+            else
+            {
+                var item = new ReleveViewModel()
+                {
+                    libelle = res.LIB_CPT,
+                    index = res.IDX.ToString(),
+                    installation = res.INST_CPT,
+                    Nominstallation = _dbOracle.installations.Where(p => p.NUM_INST == res.INST_CPT).FirstOrDefault().LIB_INST,
+                    numCompteur = res.NUM_CTR,
+                    centre = res.CODCT,
+                    Nomcentre = _dbOracle.centres.Where(p => p.CODCT == res.CODCT).FirstOrDefault().LIBCT,
+                    etat_rel = res.STATUT_REL,
+                    estimation = (res.ESTIM == null ? 0 : res.ESTIM),
+                    date_Rel = res.DATE_REL.ToString(),
+                    type_saisie = "",
+                    coherence = (string.IsNullOrEmpty(res.COHERENCE) ? "" : res.COHERENCE),
+                    statut_rel = res.STATUT_REL,
+                    utilisateur = res.CREE_PAR,
+                    volume = (int)res.VOLUME,
+                    motif = (string.IsNullOrEmpty(res.MOTIF) ? "" : res.MOTIF),
+                    imageJson = ""
+                };
+                return item;
+            }
+        }
         public IEnumerable<ReleveViewModel> showHist(string numCtr)
         {
             var query = _dbOracle.releves_eau.Where(p=>p.NUM_CTR == numCtr && p.DATE_REL.Year == DateTime.Now.Year).Take(12).OrderByDescending(p => p.DATE_REL).AsEnumerable();
