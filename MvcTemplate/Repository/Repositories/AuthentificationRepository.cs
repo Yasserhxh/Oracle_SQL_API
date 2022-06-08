@@ -114,9 +114,7 @@ namespace Repository.Repositories
         {
             var res = _dbSQL.releves_eau.Where(p => p.CODCT == CodeCentre && p.DATE_REL.Month == DateTime.Now.Month && p.INST_CPT == installation && p.NUM_CTR == CodeCompteur).FirstOrDefault();
             if (res == null)
-            {
                 return null;
-            }
             else
             {
                 var item = new ReleveViewModel()
@@ -182,7 +180,7 @@ namespace Repository.Repositories
         }
         public IEnumerable<int> findLastYearIndex(string compteurID)
         {
-            var resQ = _dbSQL.releves_eau.Where(p => p.NUM_CTR == compteurID).AsEnumerable().OrderByDescending(p => p.DATE_REL);//.Take(12);
+            var resQ = _dbSQL.releves_eau.Where(p => p.NUM_CTR == compteurID && p.DATE_REL.Year == DateTime.Now.Year).AsEnumerable().Take(12).OrderByDescending(p => p.DATE_REL);
             var res = resQ.ToList();
         /*    var bt = Enumerable.Range(0, res.FirstOrDefault().IMG.Length)
                       .Where(x => x % 2 == 0)
@@ -225,10 +223,7 @@ namespace Repository.Repositories
         {
             await _dbSQL.releves_eau.AddAsync(releve);
             var confirm = await SqlunitOfWork.Complete();
-            if (confirm > 0)
-                return true;
-            else
-                return false;
+            return confirm > 0 ? true : false;
             
         }
         public CompteurViewModel checkCompteur(string compteurID)
@@ -249,9 +244,8 @@ namespace Repository.Repositories
                 return compteurView;
             }
             else
-            {
                 return null;
-            }
+
         }
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
@@ -269,14 +263,8 @@ namespace Repository.Repositories
                 compteur.TOTAL = releveViewModel.estimation + releveViewModel.volume;
                 compteur.MOTIF = releveViewModel.motif;
                 _dbSQL.Entry(compteur).State = EntityState.Modified;
-                 var confirm = await SqlunitOfWork.Complete();
-                if (confirm > 0)
-                    if (compteur.STATUT_REL != "Validé")
-                        return await insertOracleRelve(compteur);
-                    else
-                        return true;
-                else
-                    return false;
+                var confirm = await SqlunitOfWork.Complete();
+                return confirm > 0 ? compteur.STATUT_REL != "Validé" ? await insertOracleRelve(compteur) : true : false;
             }
             else
                 return false;
@@ -285,10 +273,7 @@ namespace Repository.Repositories
         {
             await _dbOracle.releves_eau.AddAsync(compteur);
             var confirm = await unitOfWork.Complete();
-            if(confirm>0)
-                return true;
-            else
-                return false;
+            return confirm > 0 ? true : false;
             
         }
         public CentreViewModel getCentre(string userEmail)
