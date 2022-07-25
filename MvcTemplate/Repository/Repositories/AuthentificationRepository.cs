@@ -278,6 +278,7 @@ namespace Repository.Repositories
         }
         public async Task<bool> insertOracleRelve(RELEVE_EAU compteur)
         {
+            compteur.IMG_REL = "";
             await _dbOracle.releves_eau.AddAsync(compteur);
             var confirm = await unitOfWork.Complete();
             if(confirm>0)
