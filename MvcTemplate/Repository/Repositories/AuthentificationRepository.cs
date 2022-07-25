@@ -270,13 +270,8 @@ namespace Repository.Repositories
                 compteur.MOTIF = releveViewModel.motif;
                 _dbSQL.Entry(compteur).State = EntityState.Modified;
                  var confirm = await SqlunitOfWork.Complete();
-                if (confirm > 0)
-                    if (compteur.STATUT_REL == "Validé")
-                        return await insertOracleRelve(compteur);
-                    else
-                        return true;
-                else
-                    return false;
+                return confirm > 0 ? compteur.STATUT_REL != "Validé" ? await insertOracleRelve(compteur) : true : false;
+
             }
             else
                 return false;
