@@ -256,7 +256,7 @@ namespace Repository.Repositories
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
             DateTime newDate = Convert.ToDateTime(releveViewModel.date_Rel);
-            var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre/* && p.STATUT_REL == "En attente" */ ).AsEnumerable();
+            var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre && p.STATUT_REL == "En attente" ).AsEnumerable();
             var compteur = compteur1.Where(p => p.DATE_REL.Date == newDate.Date).FirstOrDefault();
             if(compteur != null)
             {
@@ -271,7 +271,7 @@ namespace Repository.Repositories
                 _dbSQL.Entry(compteur).State = EntityState.Modified;
                  var confirm = await SqlunitOfWork.Complete();
                 if (confirm > 0)
-                    if (compteur.STATUT_REL != "Validé")
+                    if (compteur.STATUT_REL == "Validé")
                         return await insertOracleRelve(compteur);
                     else
                         return true;
@@ -294,13 +294,21 @@ namespace Repository.Repositories
         public CentreViewModel getCentre(string userEmail)
         {
             var centreID = _dbOracle.utilisateurs.Where(p => p.MAILOFFICE == userEmail).FirstOrDefault().CODECENTRE;
-            var centre = _dbOracle.centres.Where(p => p.CODCT == centreID).FirstOrDefault();//.Take(12);
-            var centreView = new CentreViewModel()
+            if (centreID != null)
             {
-                CentreId = centre.CODCT,
-                CentreName = centre.LIBCT
-            } ;
-            return centreView;
+                var centre = _dbOracle.centres.Where(p => p.CODCT == centreID).FirstOrDefault();//.Take(12);
+                if (centre != null)
+                {
+                    var centreView = new CentreViewModel()
+                    {
+                        CentreId = centre.CODCT,
+                        CentreName = centre.LIBCT
+                    };
+                    return centreView;
+                }
+                return null;
+            }
+            return null;
         }
         public IEnumerable<KeyValuePair<string,string>> getInstallation(string CodeCentre)
         {
