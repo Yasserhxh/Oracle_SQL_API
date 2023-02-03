@@ -168,5 +168,11 @@ namespace WebApiONEE.Services
             var res = authentificationRepository.getInstallation(codecentre);
             return new JsonResult(res);
         }
+        [HttpGet]
+        [Route("showtest")]
+        public JsonResult showHist()
+        {
+            return new JsonResult("test is true");
+        }
     }   
 }
