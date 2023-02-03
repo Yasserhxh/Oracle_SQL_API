@@ -9,6 +9,7 @@ using Repository.IRepositories;
 using Repository.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -255,12 +256,18 @@ namespace Repository.Repositories
         }
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
+            CultureInfo culture = new CultureInfo("fr-CA", true);
+
             var newDateDay = Convert.ToDateTime(releveViewModel.date_Rel).Day;
             var newDateMonth = Convert.ToDateTime(releveViewModel.date_Rel).Month;
             var newDateYear = Convert.ToDateTime(releveViewModel.date_Rel).Year;
-            var newDate = new DateTime(newDateYear, newDateDay, newDateMonth);
+            var newDate = new DateTime(newDateYear, newDateDay, newDateMonth).ToString("dd/MM/yyyy") ;
             var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre && p.STATUT_REL == "En attente" ).AsEnumerable();
-            var compteur = compteur1.Where(p => p.DATE_REL.Date == newDate.Date).FirstOrDefault();
+            var dateRel = compteur1.FirstOrDefault().DATE_REL;
+            var dateRelDay = dateRel.Day;
+            var dateRelMonth = dateRel.Month;
+            //var compteur = compteur1.Where(p => p.DATE_REL.Date == DateTime.ParseExact(newDate, "dd/MM/yyyy", null).Date).FirstOrDefault();
+            var compteur = compteur1.Where(p => p.DATE_REL.Month == newDateMonth && p.DATE_REL.Day == newDateDay && p.DATE_REL.Year == newDateYear).FirstOrDefault();
             if(compteur != null)
             {
 
