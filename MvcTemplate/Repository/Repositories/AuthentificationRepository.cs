@@ -255,7 +255,10 @@ namespace Repository.Repositories
         }
         public async Task<bool> ValidateRel(ReleveViewModel releveViewModel)
         {
-            DateTime newDate = Convert.ToDateTime(releveViewModel.date_Rel);
+            var newDateDay = Convert.ToDateTime(releveViewModel.date_Rel).Day;
+            var newDateMonth = Convert.ToDateTime(releveViewModel.date_Rel).Month;
+            var newDateYear = Convert.ToDateTime(releveViewModel.date_Rel).Year;
+            var newDate = new DateTime(newDateYear, newDateDay, newDateMonth);
             var compteur1 = _dbSQL.releves_eau.Where(p=>p.NUM_CTR == releveViewModel.numCompteur && p.CODCT == releveViewModel.centre && p.STATUT_REL == "En attente" ).AsEnumerable();
             var compteur = compteur1.Where(p => p.DATE_REL.Date == newDate.Date).FirstOrDefault();
             if(compteur != null)
@@ -270,7 +273,7 @@ namespace Repository.Repositories
                 compteur.MOTIF = releveViewModel.motif;
                 _dbSQL.Entry(compteur).State = EntityState.Modified;
                  var confirm = await SqlunitOfWork.Complete();
-                return confirm > 0 ? compteur.STATUT_REL != "Validé" ? await insertOracleRelve(compteur) : true : false;
+                return confirm > 0 ? compteur.STATUT_REL == "Validé" ? await insertOracleRelve(compteur) : true : false;
 
             }
             else
