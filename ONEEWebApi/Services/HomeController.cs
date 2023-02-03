@@ -170,7 +170,7 @@ namespace WebApiONEE.Services
         }
         [HttpGet]
         [Route("showtest")]
-        public JsonResult showHist()
+        public JsonResult showtest()
         {
             return new JsonResult("test is true");
         }
